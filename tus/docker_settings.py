@@ -8,6 +8,9 @@ import os
 # No Debugging
 DEBUG = False
 
+# Minify in production!
+HTML_MINIFY = True
+
 # we want to allow all hosts
 ALLOWED_HOSTS = os.environ.setdefault("DJANGO_ALLOWED_HOSTS", "").split(",")
 
