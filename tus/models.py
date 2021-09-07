@@ -12,11 +12,15 @@ class TUSModel(models.Model):
     slug = models.SlugField(unique=True, blank=True, help_text=pgettext_lazy(
         'help text for TUSModel.slug', 'Slug to forward from'),
     )
+
     @property
     def source(self):
         if not self.slug:
             return '/'
         return '/{}/'.format(self.slug)
+
+    def get_absolute_url(self):
+        return self.slug
 
     def __str__(self):
         return '{}[{}]'.format(self.__class__.__name__, self.source)
