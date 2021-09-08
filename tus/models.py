@@ -20,7 +20,7 @@ class TUSModel(models.Model):
         return '/{}/'.format(self.slug)
 
     def get_absolute_url(self):
-        return self.slug
+        return self.source
 
     def __str__(self):
         return '{}[{}]'.format(self.__class__.__name__, self.source)
