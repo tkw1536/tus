@@ -40,7 +40,7 @@ class TUSModel(models.Model):
 
 class ShortURL(TUSModel):
     """ A ShortURL that can be forwarded to """
-    target = models.URLField(help_text=pgettext_lazy(
+    target = models.URLField(max_length=1000, help_text=pgettext_lazy(
         'help text for ShortURL.target', 'URL to forward to'))
     permanent = models.BooleanField(default=False, help_text=pgettext_lazy(
         'help text for ShortURL.permanent', 'Should the redirect be permanent'
