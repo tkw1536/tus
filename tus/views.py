@@ -12,14 +12,14 @@ class StaticOrShort(View):
         # try a redirect (more common)
         try:
             short = ShortURL.objects.get(slug=slug)
-            return short(self.request)
+            return short.get(self.request)
         except ShortURL.DoesNotExist:
             pass
 
         # try a static page (less common)
         try:
             static = StaticPage.objects.get(slug=slug)
-            return static(self.request)
+            return static.get(self.request)
         except StaticPage.DoesNotExist:
             pass
 

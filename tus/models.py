@@ -46,7 +46,7 @@ class ShortURL(TUSModel):
         'help text for ShortURL.permanent', 'Should the redirect be permanent'
     ))
 
-    def __call__(self, request):
+    def get(self, request):
         """ Redirects request to this url """
 
         self._record_stats(request)
@@ -63,7 +63,7 @@ class StaticPage(TUSModel):
     content_type = models.TextField(default='text/plain', help_text=pgettext_lazy(
         'help text for StaticPage.content_type', 'Content Type of static page'))
 
-    def __call__(self, request):
+    def get(self, request):
         """ Responds with the static page """
 
         self._record_stats(request)
