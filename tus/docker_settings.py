@@ -34,3 +34,7 @@ STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesSto
 
 # add the static file root
 STATIC_ROOT = "/var/www/static/"
+
+# tell Django we're running as https when using the DJANGO_X_FORWARDED_HEADER variable
+if len(os.environ.setdefault("DJANGO_X_FORWARDED_HEADER", "")) > 0:
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
