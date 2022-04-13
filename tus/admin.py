@@ -3,14 +3,28 @@ import csv
 from django.contrib import admin
 from django.forms import ModelForm, Select
 from django.http import HttpResponse
+from django.utils.safestring import mark_safe
 
 from .models import ShortURL, StaticPage
 
 class TUSAdmin(admin.ModelAdmin):
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        self.request = request
+        return qs
+
     def source(self, instance):
         return instance.source
     source.short_description = 'Source'
     source.admin_order_field = 'slug'
+
+    def view_on_site(self, obj):
+        url = self.request.build_absolute_uri(obj.get_absolute_url())
+        return mark_safe(u"<a href='{}'>{}</a>".format(url, url))
+    view_on_site.allow_tags = True
+    view_on_site.short_description = u"View on site"
+
 
 def make_csv_exporter(*field_names):
     def export_as_csv(self, request, queryset):
@@ -34,7 +48,7 @@ def make_csv_exporter(*field_names):
 
 @admin.register(ShortURL)
 class ShortURLAdmin(TUSAdmin):
-    list_display = ('source', 'target', 'permanent', 'stats_enabled', 'hits',)
+    list_display = ('source', 'view_on_site', 'target', 'permanent', 'stats_enabled', 'hits',)
     list_filter = ('permanent', 'stats_enabled',)
     search_fields = ('slug', 'target',)
 
@@ -59,7 +73,7 @@ class StaticPageForm(ModelForm):
 class StaticPageAdmin(TUSAdmin):
     form = StaticPageForm
 
-    list_display = ('source', 'content_type', 'stats_enabled', 'hits',)
+    list_display = ('source', 'view_on_site', 'content_type', 'stats_enabled', 'hits',)
     list_filter = ('content_type', 'stats_enabled',)
     search_fields = ('content_type', 'content', 'slug',)
     actions = ('export_as_csv',)
