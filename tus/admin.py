@@ -7,6 +7,7 @@ from django.utils.safestring import mark_safe
 
 from .models import ShortURL, StaticPage
 
+
 class TUSAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
@@ -46,20 +47,29 @@ def make_csv_exporter(*field_names):
     export_as_csv.short_description = "Export Selected"
     return export_as_csv
 
+
 @admin.register(ShortURL)
 class ShortURLAdmin(TUSAdmin):
-    list_display = ('source', 'view_on_site', 'target', 'permanent', 'stats_enabled', 'hits',)
+    list_display = ('source', 'view_on_site', 'target',
+                    'permanent', 'stats_enabled', 'hits',)
     list_filter = ('permanent', 'stats_enabled',)
     search_fields = ('slug', 'target',)
 
-    fields = ('slug', 'target', 'permanent', 'stats_enabled', 'hits')
+    fieldsets = (
+        ('URL', {'fields': ('slug',)}),
+        ('Target', {'fields': ('target', 'permanent')}),
+        ('Stats', {'fields': ('stats_enabled', 'hits')}),
+    )
     readonly_fields = ('hits',)
 
     export_as_csv = make_csv_exporter(
         'slug', 'target', 'permanent', 'stats_enabled', 'hits')
     actions = ('export_as_csv',)
 
+
 CONTENT_TYPES = ('text/plain', 'text/html')
+
+
 class StaticPageForm(ModelForm):
     class Meta:
         model = StaticPage
@@ -73,10 +83,15 @@ class StaticPageForm(ModelForm):
 class StaticPageAdmin(TUSAdmin):
     form = StaticPageForm
 
-    list_display = ('source', 'view_on_site', 'content_type', 'stats_enabled', 'hits',)
+    list_display = ('source', 'view_on_site',
+                    'content_type', 'stats_enabled', 'hits',)
     list_filter = ('content_type', 'stats_enabled',)
     search_fields = ('content_type', 'content', 'slug',)
     actions = ('export_as_csv',)
 
-    fields = ('slug', 'content', 'content_type', 'stats_enabled', 'hits')
+    fieldsets = (
+        ('URL', {'fields': ('slug',)}),
+        ('Content', {'fields': ('content', 'content_type')}),
+        ('Stats', {'fields': ('stats_enabled', 'hits')}),
+    )
     readonly_fields = ('hits',)
