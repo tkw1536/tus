@@ -10,7 +10,8 @@ RUN set -x ; \
 RUN apk add --no-cache \
     build-base \
     linux-headers \
-    python3-dev
+    python3-dev \
+    mailcap
 
 ADD docker/uwsgi.ini /app/uwsgi.ini
 
