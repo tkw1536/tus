@@ -21,8 +21,7 @@ class TUSAdmin(admin.ModelAdmin):
     source.admin_order_field = 'slug'
 
     def view_on_site(self, obj):
-        url = self.request.build_absolute_uri(obj.get_absolute_url())
-        return mark_safe(u"<a href='{}'>{}</a>".format(url, url))
+        return self.request.build_absolute_uri(obj.get_absolute_url())
     view_on_site.allow_tags = True
     view_on_site.short_description = u"View on site"
 
