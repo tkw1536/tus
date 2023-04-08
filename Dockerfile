@@ -1,5 +1,5 @@
 # image for python
-FROM python:3.9-alpine
+FROM python:3.11-alpine
 
 # create www-data
 RUN set -x ; \
