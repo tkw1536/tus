@@ -24,3 +24,8 @@ urlpatterns = [
     path('', StaticOrShort.as_view()),
     path('<slug:slug>/', StaticOrShort.as_view()),
 ]
+
+handler400 = "tus.views.handler400"
+handler403 = "tus.views.handler403"
+handler404 = "tus.views.handler404"
+handler500 = "tus.views.handler500"
