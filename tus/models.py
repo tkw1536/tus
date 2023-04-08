@@ -3,6 +3,7 @@ from django.http.response import HttpResponse
 from django.shortcuts import redirect
 from django.db.models import F
 from django.utils.translation import pgettext_lazy
+from django.utils.safestring import mark_safe
 
 
 class TUSModel(models.Model):
@@ -43,8 +44,8 @@ class ShortURL(TUSModel):
     target = models.URLField(max_length=1000, help_text=pgettext_lazy(
         'help text for ShortURL.target', 'URL to forward to'))
     permanent = models.BooleanField(default=False, help_text=pgettext_lazy(
-        'help text for ShortURL.permanent', 'Should the redirect be permanent'
-    ))
+        'help text for ShortURL.permanent', mark_safe('Should the redirect be permanent and use <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/301" target="_blank" rel="noopener noreferer">HTTP 301</a> instead of <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/302" target="_blank" rel="noopener noreferer">HTTP 302</a>?'))
+    )
 
     def get(self, request):
         """ Redirects request to this url """
