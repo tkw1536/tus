@@ -19,5 +19,7 @@ docker run --name=tus -e 'DJANGO_ALLOWED_HOSTS=*' -e 'DJANGO_SECRET_KEY=supersec
 docker exec -ti tus python manage.py createsuperuser
 ```
 
+If you encounter a permissions error, ensure that the `www-data:www-data` user (with `uid/gid 82/82`) has permissions to write the volume.
+
 Afterwards visit `http://localhost:8080/admin` to login.
 Everything should be self-explanatory.
