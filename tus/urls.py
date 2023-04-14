@@ -22,7 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # allow both the root and slug!
     path('', StaticOrShort.as_view()),
-    path('<slug:slug>/', StaticOrShort.as_view()),
+    path('<path:slug>/', StaticOrShort.as_view()),
 ]
 
 handler400 = "tus.views.handler400"
