@@ -13,7 +13,7 @@ class TUSModel(models.Model):
     class Meta:
         abstract = True
 
-    slug = models.SlugField(unique=True, blank=True, help_text=pgettext_lazy(
+    slug = models.CharField(max_length=500, unique=True, blank=True, help_text=pgettext_lazy(
         'help text for TUSModel.slug', 'Slug to forward from'),
     )
 
