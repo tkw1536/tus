@@ -1,9 +1,12 @@
+import json
+
 from django.db import models
 from django.http.response import HttpResponse
 from django.shortcuts import redirect
 from django.db.models import F
-from django.utils.translation import pgettext_lazy
+from django.utils.translation import pgettext_lazy, gettext_lazy
 from django.utils.safestring import mark_safe
+from django.core.exceptions import ValidationError
 
 
 class TUSModel(models.Model):
@@ -73,3 +76,10 @@ class StaticPage(TUSModel):
         res['Content-Length'] = len(self.content)
 
         return res
+
+    def clean(self):
+        if self.content_type == "application/json":
+            try:
+                json.loads(self.content)
+            except json.JSONDecodeError as exc:
+                raise ValidationError(gettext_lazy("Content is not valid JSON, but content type is set to application/json")) from exc

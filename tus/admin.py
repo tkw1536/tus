@@ -67,7 +67,7 @@ class ShortURLAdmin(TUSAdmin):
     actions = ('export_as_csv',)
 
 
-CONTENT_TYPES = ('text/plain', 'text/html')
+CONTENT_TYPES = ('text/plain', 'text/html', 'application/json')
 
 
 class StaticPageForm(ModelForm):
