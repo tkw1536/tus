@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "tus"
+version = "0.1.0"
+description = "Tiny URL Shortener / Tom's URL Shortener — a dockerizable Django URL shortener"
+license = "WTFPL"
+authors = []
+package-mode = false
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.14"
+Django = "~6.1"
+django-htmlmin = "~0.11"
+
+[tool.poetry.group.prod.dependencies]
+uwsgi = "~2.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

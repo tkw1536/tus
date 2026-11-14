@@ -1,34 +1,34 @@
-# image for python
-FROM python:3.14-alpine
+FROM python:3.14-alpine AS build-base
 
-# create www-data
-RUN set -x ; \
-  addgroup -g 82 -S www-data ; \
-  adduser -u 82 -D -S -G www-data www-data && exit 0 ; exit 1
+# --- builder: compile uwsgi and install Python deps into a venv ---
+FROM build-base AS builder
 
-# Install binary python dependencies
 RUN apk add --no-cache \
     build-base \
     linux-headers \
     python3-dev \
-    mailcap
+ && pip install --no-cache-dir poetry
 
-ADD docker/uwsgi.ini /app/uwsgi.ini
+WORKDIR /app
+COPY pyproject.toml poetry.lock ./
+RUN poetry config virtualenvs.in-project true \
+ && poetry install --only main --with prod --no-interaction --no-root
 
-# Add requirements and install dependencies
-ADD requirements.txt /app/
-ADD requirements-prod.txt /app/
-WORKDIR /app/
+# --- runtime: lean image with venv + app only ---
+FROM build-base
 
-# install all the python runtime dependencies
-RUN mkdir -p /var/www/static/ \
-    && pip install -r requirements.txt \
-    && pip install -r requirements-prod.txt
+RUN apk add --no-cache mailcap \
+ && (getent group www-data >/dev/null || addgroup -g 82 -S www-data) \
+ && (getent passwd www-data >/dev/null || adduser -u 82 -D -S -G www-data www-data)
 
-# Install Django App and setup the setting module
-ADD manage.py /app/
-ADD docker/ /app/docker
-ADD tus/ /app/tus
+WORKDIR /app
+COPY --from=builder /app/.venv /app/.venv
+ENV PATH="/app/.venv/bin:$PATH"
+
+COPY docker/uwsgi.ini /app/uwsgi.ini
+COPY manage.py /app/
+COPY docker/ /app/docker
+COPY tus/ /app/tus
 
 # default settings are in MemberManagement
 ENV DJANGO_SETTINGS_MODULE="tus.docker_settings"
@@ -51,8 +51,9 @@ ENV DJANG_DB_HOST=""
 ENV DJANGO_DB_PORT=""
 
 # create data volume, and collect static files
-RUN mkdir /data/ && chown -R www-data:www-data /data/
-RUN DJANGO_SECRET_KEY=setup python manage.py collectstatic --noinput
+RUN mkdir -p /var/www/static/ /data/ \
+ && chown -R www-data:www-data /data/ \
+ && DJANGO_SECRET_KEY=setup python manage.py collectstatic --noinput
 
 # Volume and ports
 USER www-data:www-data
