@@ -5,6 +5,10 @@ on:
     branches: [main]
     tags: ["v1.**"]
 
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: tkw1536/tus
