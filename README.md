@@ -23,3 +23,10 @@ If you encounter a permissions error, ensure that the `www-data:www-data` user (
 
 Afterwards visit `http://localhost:8080/admin` to login.
 Everything should be self-explanatory.
+
+## Development
+
+```bash
+poetry install
+poetry run python manage.py test tests
+```
